@@ -23,7 +23,14 @@ public class DictionaryFunction extends DictionaryManagement {
            System.out.print("Enter your choice: ");
            int choice = sc.nextInt();
            switch (choice) {
+               /**
+                * Exit
+                */
                case 0 -> System.exit(0);
+
+               /**
+                * add new word
+                */
                case 1 -> {
                    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
                    System.out.print("Enter the word: ");
@@ -32,13 +39,23 @@ public class DictionaryFunction extends DictionaryManagement {
                    String pronun = br.readLine();
                    System.out.print("Enter the meaning: ");
                    String vWords = br.readLine();
-                   dm.insertWord(eWords, pronun, vWords, d);
+                   Word word = new Word(eWords, pronun, vWords);
+                   dm.addWord(word, d);
                }
+
+               /**
+                * remove a word
+                */
                case 2 -> {
                    System.out.print("Enter the word: ");
-                   String eWords = sc.next();
-                   dm.deleteWord(eWords, d);
+                   BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                   String eWords = br.readLine();
+                   dm.removeWord(eWords, d);
                }
+
+               /**
+                * update a word
+                */
                case 3 -> {
                    System.out.print("Enter the word: ");
                    String eWords = sc.next();
@@ -47,6 +64,10 @@ public class DictionaryFunction extends DictionaryManagement {
                    String vWords = br.readLine();
                    dm.updateWord(eWords, vWords, d);
                }
+
+               /**
+                * Print the dictionary
+                */
                case 4 -> dictionaryBasic(d);
                case 5 -> {
                    System.out.print("Enter the word: ");
@@ -54,18 +75,27 @@ public class DictionaryFunction extends DictionaryManagement {
                    dm.dictionaryLookup(eWords, d);
 
                }
+               /**
+                * import the dictionary data from file
+                */
                case 6 -> importDictionary(dm, d);
+
+               /**
+                * Return the list of dictionary search
+                */
                case 7 -> {
-                   System.out.print("Enter the word: ");
+                   System.out.print("Enter the word or string: ");
                    String word = sc.next();
                    List<String> result = dm.dictionarySearch(word, d);
                    for (String ans: result) {
                        System.out.println(ans);
                    }
                }
-               case 8 -> {
-                   dm.exportDictionaryToFile(d);
-               }
+
+               /**
+                * export the dictionary into a new file
+                */
+               case 8 -> dm.exportDictionaryToFile(d);
            }
        }
    }
