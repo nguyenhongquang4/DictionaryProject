@@ -1,29 +1,31 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class DictionaryManagement {
+public class DictionaryManagement implements DictionarySetting {
     DictionaryManagement() {
-
     }
-    public void insertFromCommandline(String eWords, String pronun, String vWords, Dictionary dictionary) {
-            dictionary.addWord(eWords, pronun ,vWords);
+
+    public void insertFromCommandline(Word word, Dictionary dictionary) {
+            dictionary.addWord(word, dictionary);
     }
     public void insertFromFile(Dictionary dictionary) {
         try {
-            File newFile = new File("C:/Users/Admin/OneDrive/Documents/dictionary.txt");
+            File newFile = new File("C:/Users/Admin/OneDrive/Documents/importDictionary.txt");
             BufferedReader bufferedReader = Files.newBufferedReader(newFile.toPath(), StandardCharsets.UTF_8);
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 String[] parts = line.split(":");
-                if (parts.length >= 3) {
+                if (parts.length >= 2) {
                     String eWords = parts[0].trim();
                     String pronun = parts[1].trim();
-                    String vWords = parts[2].trim();
-                    insertFromCommandline(eWords, pronun, vWords, dictionary);
+                    String vWords = "";
+                    for (int i = 2; i < parts.length; i++) {
+                        vWords += parts[i].trim();
+                    }
+                    Word word = new Word(eWords, pronun, vWords);
+                    insertFromCommandline(word, dictionary);
                 }
             }
             bufferedReader.close();
@@ -73,35 +75,27 @@ public class DictionaryManagement {
         return result;
     }
     public void dictionaryLookup(String eWords, Dictionary dictionary) {
-        for (HashMap<String, String> vocab: dictionary.getVocab().keySet()) {
-            if (vocab.containsKey(eWords)) {
-                String pronun = vocab.get(eWords);
-                String meaning = dictionary.getVocab().get(vocab);
-                System.out.println(eWords + ": " + pronun + ": " + meaning);
-                return;
+            for (HashMap<String, String> vocab : dictionary.getVocab().keySet()) {
+                if (vocab.containsKey(eWords)) {
+                    String pronun = vocab.get(eWords);
+                    String meaning = dictionary.getVocab().get(vocab);
+                    System.out.println(eWords + ": " + pronun + ": " + meaning);
+                }
             }
-        }
     }
-    public void insertWord(String eWords, String pronun, String vWords, Dictionary dictionary) {
-        dictionary.addWord(eWords, pronun, vWords);
+    public void addWord(Word word, Dictionary dictionary) {
+        dictionary.addWord(word, dictionary);
     }
-    public void deleteWord(String eWords, Dictionary dictionary) {
-        for (HashMap<String, String> vocab : dictionary.getVocab().keySet()) {
-            dictionary.removeWord(eWords);
-            return;
-        }
+    public void removeWord(String eWords, Dictionary dictionary) {
+            dictionary.removeWord(eWords, dictionary);
     }
 
     public void updateWord(String eWords, String newVWords, Dictionary dictionary) {
-        for (HashMap<String, String> vocab: dictionary.getVocab().keySet()) {
-            if (vocab.containsKey(eWords)) {
-                String pronun = vocab.get(eWords);
-                String meaning = dictionary.getVocab().get(vocab);
-                System.out.println(eWords + ": " + pronun + ": " + meaning);
-                dictionary.getVocab().replace(vocab, meaning, newVWords);
-                System.out.println(eWords + ": " + pronun + ": " + newVWords);
-            }
-        }
+        dictionary.updateWord(eWords, newVWords, dictionary);
+    }
+
+    public void print(Dictionary dictionary) {
+        dictionary.print(dictionary);
     }
 }
 
